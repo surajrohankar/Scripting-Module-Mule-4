@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="mule-scripting-module-mule-4Flow"
+		doc:id="73581725-2107-4035-a257-4e1d03c3778e">
+		<http:listener doc:name="8081/oracleNashormEngine"
+			doc:id="93520633-98ff-4183-82ef-89fa26d147c3"
+			path="${httpListener.pathJS}" config-ref="HTTP_Listener_config"/>
+		<set-variable value="#[22]" doc:name="Increment value 22" doc:id="475274a1-91d0-4f9a-a163-c6db359addf8" variableName="increment"/>
+		<scripting:execute doc:name="Java Script(Initial Value 10)" doc:id="99fe9359-78e7-401d-961a-ce0f856880b9" engine="ECMAScript">
+			<scripting:code ><![CDATA[log.info("Incrementing payload by " + (vars.increment + initialValue))
+        result = vars.increment + Number(payload) + initialValue]]>
+    </scripting:code>
+			<scripting:parameters ><![CDATA[#[{initialValue: 10}]]]></scripting:parameters>
+		</scripting:execute>
+		<ee:transform doc:name="JSON Payload" doc:id="5cab8251-673a-42da-a044-59c29461e8ce" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+
+	
+</mule>

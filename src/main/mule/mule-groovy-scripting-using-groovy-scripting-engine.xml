@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="mule-groovy-scriptingFlow" doc:id="e8ae3bb3-e9d6-4b8c-9362-4b2ae4361961">
+		<http:listener doc:name="8081/groovyScriptingEngine" doc:id="8c12bc43-9b57-419f-b039-4c433276673b" path="${httpListener.pathGroovy}" config-ref="HTTP_Listener_config" />
+		<scripting:execute engine="Groovy" doc:name="Groovy Script" doc:id="f983d411-71bf-47a0-bd64-1223176870a4">
+			<scripting:code><![CDATA[flow = registry.lookupByName("test-flow").get();
+        if (flow.isStarted())
+	        flow.stop()
+        else
+	        flow.start()]]></scripting:code>
+		</scripting:execute>
+		<ee:transform doc:name='"Hello"' doc:id="559982b0-c06b-4b00-af1f-3405f2f6a325">
+			<ee:message>
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"Hello"]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="stopped-flow" doc:id="50b15815-d0ba-4c5f-b185-f83a951f2368" name="stopped-flow" />
+	</flow>
+	<flow name="stopped-flow" doc:id="f11b296c-f2b4-4022-ad8a-bac431f8257e" initialState="stopped">
+		<set-payload value='#[" Muleys!"]' doc:name='payload ++ " Muleys!"' doc:id="89541938-f0dc-4753-8fef-1de98fb62551" />
+		<logger level="INFO" doc:name="Payload" doc:id="de2fad5e-22d9-4f5c-9994-16320f17481e" message="#[payload]"/>
+	</flow>
+</mule>

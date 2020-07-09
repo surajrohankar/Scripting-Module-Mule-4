@@ -1,0 +1,5 @@
+httpListener:
+  port: "8081"
+  pathJS: "oracleNashornEngine"
+  pathGroovy: "groovyScriptingEngine"
+  pathPython: "jythonEngine"

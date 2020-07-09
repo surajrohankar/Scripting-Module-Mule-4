@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="mule-python-srciptingFlow" doc:id="9d515dee-0937-4afa-888e-b03d5a54028c" >
+		<http:listener doc:name="8081/jythonEngine" doc:id="ee3fee5a-5249-4836-a715-388eb419e6d0" config-ref="HTTP_Listener_config" path="${httpListener.pathPython}"/>
+		<scripting:execute doc:name="Python Script" doc:id="978a6406-a1fb-4fbc-a91a-9550ebe6cbe8" engine="python">
+			<scripting:code ><![CDATA[def factorial(n):
+          if n == 0: return 1
+	  return n * factorial(n-1)
+
+      result = factorial(10)]]></scripting:code>
+		</scripting:execute>
+		<ee:transform doc:name="Transform Message" doc:id="54e79270-3dee-4a9d-90c0-34bb3ce50b7a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
